@@ -1,0 +1,195 @@
+package com.example.mini_project;
+
+import android.R.color;
+import android.os.Bundle;
+import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MiniprjActivity extends Activity {
+	EditText editText1,editText2,editText3,editText4,editText5,editText6;
+	TextView textView6;
+	RadioGroup radioGroup1,radioGroup2,radioGroup3,radioGroup4;
+	Button save,view,close,detail;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_miniprj);
+        editText1=(EditText)findViewById(R.id.editText1);
+        editText2=(EditText)findViewById(R.id.editText2);
+        editText3=(EditText)findViewById(R.id.editText3);
+        editText4=(EditText)findViewById(R.id.editText4);
+        
+        radioGroup1=(RadioGroup)findViewById(R.id.radioGroup1);
+        
+        save=(Button)findViewById(R.id.save);
+        view=(Button)findViewById(R.id.view);
+        close=(Button)findViewById(R.id.close);
+        save.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				insert();
+			}
+		});
+        close.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				close();
+			}
+		});
+        view.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				showtable();
+			}
+		});
+        
+    
+    }
+    
+public void insert(){
+	SQLiteDatabase db=openOrCreateDatabase("con.db",MODE_PRIVATE,null);
+	db.execSQL("create table IF NOT EXISTS exp(aid text primary key ,name text,mobile text,gender text,district text)");
+	Toast.makeText(this, "CREATED", Toast.LENGTH_LONG).show();
+	String id =editText1.getText().toString();
+	String nam =editText2.getText().toString();
+	String mob =editText3.getText().toString();
+	String gen =((RadioButton)this.findViewById(radioGroup1.getCheckedRadioButtonId())).getText().toString();
+	
+	String dis =editText4.getText().toString();
+	
+	if(id.equals("")==true||nam.equals("")==true||mob.equals("")==true||dis.equals(""))
+	{
+		Toast.makeText(this, "Fill the Details", Toast.LENGTH_LONG).show();
+	}
+	
+	
+    else
+    {
+    	db.execSQL("Insert into exp values('"+id+"','"+nam+"','"+mob+"','"+gen+"','"+dis+"')");
+    	Toast.makeText(this,"" + nam +" inserted", Toast.LENGTH_LONG).show();
+    	editText1.setText("");
+    	editText2.setText("");
+    	editText3.setText("");
+    	editText4.setText("");
+    	
+    	
+    }
+	
+    }
+public void close()
+{
+	System.exit(0);
+}
+   
+    public void showtable(){
+    	SQLiteDatabase db=openOrCreateDatabase("con.db",MODE_PRIVATE,null);
+    	Cursor c=db.rawQuery("select * from exp", null);
+    	int count=c.getCount();
+    	c.moveToFirst();
+    	TableLayout tableLayout=new TableLayout(getApplicationContext());
+    	//tableLayout.setVerticalScrollBarEnabled(true);
+    	//tableLayout.setHorizontalScrollBarEnabled(true);
+    	
+    	TableRow tableRow=new TableRow(getApplicationContext());
+    	TextView textView=new TextView(getApplicationContext());
+    	
+    	textView.setText("ADHAR_ID");
+    	textView.setTextColor(Color.BLUE);
+    	textView.setTypeface(null,Typeface.BOLD_ITALIC);
+    	textView.setPadding(20, 20, 20, 20);
+    		tableRow.addView(textView);
+    	
+    	TextView textView6=new TextView(getApplicationContext());
+    	textView6.setText("NAME");
+    	textView6.setTextColor(Color.BLUE);
+    	textView6.setTypeface(null,Typeface.BOLD_ITALIC);
+    	textView6.setPadding(20, 20, 20, 20);
+    		tableRow.addView(textView6);
+    		
+    	TextView textView7=new TextView(getApplicationContext());
+    	textView7.setText("MOBILE_NO");
+    	textView7.setTextColor(Color.BLUE);
+    	textView7.setTypeface(null,Typeface.BOLD_ITALIC);
+    	textView7.setPadding(20, 20, 20, 20);
+    		tableRow.addView(textView7);
+    	
+    		
+    		TextView textView8=new TextView(getApplicationContext());
+        	textView8.setText("GENDER");
+        	textView8.setTextColor(Color.BLUE);
+        	textView8.setTypeface(null,Typeface.BOLD_ITALIC);
+        	textView8.setPadding(20, 20, 20, 20);
+        		tableRow.addView(textView8);
+        		
+        	
+        		TextView textView9=new TextView(getApplicationContext());
+            	textView9.setText("DISTRICT");
+            	textView9.setTextColor(Color.BLUE);
+            	textView9.setTypeface(null,Typeface.BOLD_ITALIC);
+            	textView9.setPadding(20, 20, 20, 20);
+            		tableRow.addView(textView9);
+            		
+            	tableLayout.addView(tableRow);
+            	
+            	for(int j=0;j < count;j++)
+            	{
+            		tableRow=new TableRow(getApplicationContext());
+            		TextView textView1=new TextView(getApplicationContext());
+            		textView1.setText(c.getString(c.getColumnIndex("aid")));
+            		
+            		TextView textView2=new TextView(getApplicationContext());
+            		textView2.setText(c.getString(c.getColumnIndex("name")));
+            		
+            		TextView textView3=new TextView(getApplicationContext());
+            		textView3.setText(c.getString(c.getColumnIndex("mobile")));
+            		
+            		TextView textView4=new TextView(getApplicationContext());
+            		textView4.setText(c.getString(c.getColumnIndex("gender")));
+            		
+            		TextView textView5=new TextView(getApplicationContext());
+            		textView5.setText(c.getString(c.getColumnIndex("district")));
+            		
+            		textView1.setPadding(20, 20, 20, 20);
+            		textView2.setPadding(20, 20, 20, 20);
+            		textView3.setPadding(20, 20, 20, 20);
+            		textView4.setPadding(20, 20, 20, 20);
+            		textView5.setPadding(20, 20, 20, 20);
+            		
+            		textView1.setTextColor(Color.BLACK);
+            		textView2.setTextColor(Color.BLACK);
+            		textView3.setTextColor(Color.BLACK);
+            		textView4.setTextColor(Color.BLACK);
+            		textView5.setTextColor(Color.BLACK);
+            		
+            		tableRow.addView(textView1);
+            		tableRow.addView(textView2);
+            		tableRow.addView(textView3);
+            		tableRow.addView(textView4);
+            		tableRow.addView(textView5);
+            		tableLayout.addView(tableRow);
+            		c.moveToNext();
+            	}
+            	setContentView(tableLayout);
+            	db.close();
+    }
+ 
+}
